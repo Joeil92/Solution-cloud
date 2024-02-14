@@ -1,6 +1,7 @@
 import Input from "@SC/components/form/input";
 import Submit from "@SC/components/form/submit";
 import Container from "@SC/ui/container/container";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom";
@@ -15,38 +16,30 @@ interface Props {
 }
 
 export default function LoginForm({ }: Props) {
+    const auth = getAuth();
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const { control, handleSubmit, formState: { errors } } = useForm<Inputs>({
         defaultValues: {
-            email: "",
-            password: ""
+            email: "test@mon-organisation.fr",
+            password: "test1234"
         }
     });
 
     const onSubmit = async (data: Inputs) => {
         setIsLoading(true);
 
-        try {
-            const response = await fetch('http://localhost:8000/auth', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            const json = await response.json();
-           
-            if(!response.ok) {
-                throw json.message;
-            }
-
-            // AuthProvider.signin(json.token);
-
-            navigate(`/`);
-        } catch (error) {
-            // handleAlert({ type: 'danger', message: error as string })
-        } finally {
-            setIsLoading(false);
-        }
+        signInWithEmailAndPassword(auth, data.email, data.password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                console.log(user);
+                navigate('/');
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+            })
+            .finally(() => setIsLoading(false));
     }
 
     return (
@@ -70,7 +63,7 @@ export default function LoginForm({ }: Props) {
             />
             <Container className="text-center">
                 <Submit
-                    value="Se connecter" 
+                    value="Se connecter"
                     disabled={isLoading}
                     loading={isLoading}
                 />

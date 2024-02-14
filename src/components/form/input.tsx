@@ -5,7 +5,8 @@ import { Control, Controller, FieldError } from "react-hook-form";
 type Type = 'text' | 'password' | 'number' | 'date'
 
 interface Rules {
-    required: boolean
+    required?: boolean
+    minLength?: number
 }
 
 interface Props {
@@ -36,6 +37,9 @@ export default function Input({ control, name, label, type = 'text', placeholder
                     {
                         errors?.type === 'required' && <Typography className="text-red-500 text-xs">Ce champ est obligatoire</Typography>
                     }
+                    {
+                        errors?.type === 'minLength' && <Typography className="text-red-500 text-xs">Ce champ est a une taille minimale à respecter</Typography>
+                    }                    
                 </Container>
             )}
             name={name}

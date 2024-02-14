@@ -2,6 +2,8 @@ import Input from "@SC/components/form/input"
 import Submit from "@SC/components/form/submit"
 import Container from "@SC/ui/container/container"
 import { useForm } from "react-hook-form"
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 interface Inputs {
     email: string
@@ -12,20 +14,31 @@ interface Inputs {
 }
 
 export default function RegisterForm() {
+    const auth = getAuth();
+    const navigate = useNavigate();
     const { handleSubmit, control, formState: { errors } } = useForm<Inputs>({
         defaultValues: {
             email: "test@mon-organisation.fr",
-            password: "test",
-            plainPassword: "test",
+            password: "test1234",
+            plainPassword: "test1234",
             firstname: "John",
             lastname: "Doe"
         }
     });
-
-    const onSubmit = (data: Inputs) => {
+    
+    const onSubmit = async (data: Inputs) => {
         if (data.password !== data.plainPassword) return;
 
-        console.log(data);
+        createUserWithEmailAndPassword(auth, data.email, data.password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          navigate('/login');
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log(errorCode, errorMessage);
+        });
     }
 
     return (
@@ -63,7 +76,7 @@ export default function RegisterForm() {
                 type="password"
                 control={control}
                 errors={errors.password}
-                rules={{ required: true }}
+                rules={{ required: true, minLength: 6 }}
             />
             <Input
                 name="plainPassword"
@@ -72,7 +85,7 @@ export default function RegisterForm() {
                 type="password"
                 control={control}
                 errors={errors.plainPassword}
-                rules={{ required: true }}
+                rules={{ required: true, minLength: 6 }}
             />
             <Submit
                 value="Créer mon compte"

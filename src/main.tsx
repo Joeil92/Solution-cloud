@@ -4,6 +4,7 @@ import { RouterProvider } from 'react-router-dom'
 import router from './router/router.tsx'
 import LoadingPage from './router/loading-page.tsx'
 import './index.css'
+import './services/firebase/firebase.ts'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
