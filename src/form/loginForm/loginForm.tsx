@@ -1,9 +1,9 @@
 import Input from "@SC/components/form/input";
 import Submit from "@SC/components/form/submit";
+import { signInUser } from "@SC/services/firebase/firebase";
 import Alert from "@SC/ui/alert/alert";
 import AlertObject from "@SC/ui/alert/alert.interface";
 import Container from "@SC/ui/container/container";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,6 @@ interface Inputs {
 }
 
 export default function LoginForm() {
-    const auth = getAuth();
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
     const [alert, setAlert] = useState<AlertObject>();
@@ -28,11 +27,13 @@ export default function LoginForm() {
     const onSubmit = async (data: Inputs) => {
         setIsLoading(true);
 
-        signInWithEmailAndPassword(auth, data.email, data.password)
+        await signInUser(data.email, data.password)
             .then((userCredential) => {
-                const user = userCredential.user;
-                console.log(user);
-                navigate('/');
+                if(userCredential) {
+                    const user = userCredential.user;
+                    console.log(user);
+                    navigate('/');
+                }
             })
             .catch((error) => {
                 let msg;

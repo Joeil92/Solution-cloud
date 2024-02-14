@@ -2,11 +2,11 @@ import Input from "@SC/components/form/input"
 import Submit from "@SC/components/form/submit"
 import Container from "@SC/ui/container/container"
 import { useForm } from "react-hook-form"
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import AlertObject from "@SC/ui/alert/alert.interface";
 import Alert from "@SC/ui/alert/alert";
+import { createUser } from "@SC/services/firebase/firebase";
 
 interface Inputs {
     email: string
@@ -17,7 +17,6 @@ interface Inputs {
 }
 
 export default function RegisterForm() {
-    const auth = getAuth();
     const navigate = useNavigate();
     const [alert, setAlert] = useState<AlertObject>();
     const { handleSubmit, control, formState: { errors } } = useForm<Inputs>({
@@ -33,12 +32,14 @@ export default function RegisterForm() {
     const onSubmit = async (data: Inputs) => {
         if (data.password !== data.plainPassword) return;
 
-        createUserWithEmailAndPassword(auth, data.email, data.password)
+        createUser(data.email, data.password)
             .then((userCredential) => {
-                const user = userCredential.user;
-                console.log(user);
-                
-                navigate('/login');
+                if(userCredential) {
+                    const user = userCredential.user;
+                    console.log(user);
+                    
+                    navigate('/');
+                }
             })
             .catch((error) => {
                 let msg;

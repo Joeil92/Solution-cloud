@@ -1,11 +1,11 @@
+import { AuthContext } from "@SC/contexts/authContext";
 import Typography from "@SC/ui/typography/typography";
-import { useOutletContext } from "react-router-dom";
-import { OutletContextProps } from "../root/root";
+import { useContext } from "react";
 
 export default function Main() {
-    const { user } = useOutletContext<OutletContextProps>();
+    const { currentUser } = useContext(AuthContext);
 
     return (
-        <Typography>{user?.uid}</Typography>
+        <Typography>{currentUser?.uid}</Typography>
     )
 }
