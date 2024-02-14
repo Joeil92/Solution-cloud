@@ -1,45 +1,40 @@
-import { useEffect } from 'react';
-import styles from './alert.module.css';
-import Container from '../container/container';
-import Typography from '../typography/typography';
+import { useEffect } from "react"
+import styles from "./alert.module.css";
+import Container from "../container/container";
+import Typography from "../typography/typography";
+import AlertInterface from "./alert.interface";
 
-type AlertType = 'primary' | 'success' | 'danger' | 'warning'
-
-enum AlertColor {
-    primary = 'blue',
-    danger = 'red',
-    success = 'green',
-    warning = 'yellow'
-}
-
-export interface AlertState {
-    type: AlertType
+interface Props {
+    type: "primary" | "success" | "danger" | "warning"
     message: string
+    handleState?: React.Dispatch<React.SetStateAction<AlertInterface | undefined>>
 }
 
-interface props {
-    message: string
-    type: AlertType
-    handleState: React.Dispatch<React.SetStateAction<AlertState | undefined>>
-}
+export default function Alert({ type, message, handleState }: Props) {
 
-function Alert({ type, message, handleState }: props) {
+    const handleType = () => {
+        if(type === "danger") {
+            return "my-3 bg-red-200 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+        } else {
+            return "my-3 bg-blue-200 border border-blue-400 text-blue-700 px-4 py-3 rounded relative"
+        }
+    }
 
     useEffect(() => {
-        const timeout = setTimeout(() => {
-            handleState(undefined)
-        }, 3000);
+        if (handleState) {
+            const timeout = setTimeout(() => {
+                handleState(undefined)
+            }, 3000);
 
-        return () => clearTimeout(timeout);
+            return () => clearTimeout(timeout);
+        }
     }, [handleState]);
-    
+
     return (
-        <Container className={styles.alert}>
-            <div className={`bg-${AlertColor[type]}-200 border-${AlertColor[type]}-400 text-${AlertColor[type]}-700 py-3 rounded`} role="alert">
-                <Typography className='mb-0 font-semibold block sm:inline'>{message}</Typography>
-            </div>
+        <Container className={handleState ? styles.alert : ""}>
+            <Container className={handleType()}>
+                <Typography>{message}</Typography>
+            </Container>
         </Container>
     )
 }
-
-export default Alert;

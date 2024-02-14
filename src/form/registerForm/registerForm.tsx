@@ -4,6 +4,9 @@ import Container from "@SC/ui/container/container"
 import { useForm } from "react-hook-form"
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import AlertObject from "@SC/ui/alert/alert.interface";
+import Alert from "@SC/ui/alert/alert";
 
 interface Inputs {
     email: string
@@ -16,6 +19,7 @@ interface Inputs {
 export default function RegisterForm() {
     const auth = getAuth();
     const navigate = useNavigate();
+    const [alert, setAlert] = useState<AlertObject>();
     const { handleSubmit, control, formState: { errors } } = useForm<Inputs>({
         defaultValues: {
             email: "test@mon-organisation.fr",
@@ -25,71 +29,85 @@ export default function RegisterForm() {
             lastname: "Doe"
         }
     });
-    
+
     const onSubmit = async (data: Inputs) => {
         if (data.password !== data.plainPassword) return;
 
         createUserWithEmailAndPassword(auth, data.email, data.password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          navigate('/login');
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorCode, errorMessage);
-        });
+            .then((userCredential) => {
+                const user = userCredential.user;
+                console.log(user);
+                
+                navigate('/login');
+            })
+            .catch((error) => {
+                let msg;
+                if(error.code == 'auth/email-already-in-use') {
+                    msg = "Un compte avec cet email existe déjà"
+                } else {
+                    msg = "Une erreur est survenue merci de réessayer ultérieurement"
+                }
+
+                setAlert({ type: 'danger', message: msg })
+            });
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <Input
-                name="email"
-                label="Email"
-                placeholder="Email"
-                control={control}
-                errors={errors.email}
-                rules={{ required: true }}
-            />
-            <Container className="grid grid-cols-2 gap-3">
+        <>
+            {alert &&
+                <Alert
+                    type={alert.type}
+                    message={alert.message}
+                    handleState={setAlert} />}        
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <Input
-                    name="firstname"
-                    label="Prénom"
-                    placeholder="Prénom"
+                    name="email"
+                    label="Email"
+                    placeholder="Email"
                     control={control}
-                    errors={errors.firstname}
+                    errors={errors.email}
                     rules={{ required: true }}
                 />
+                <Container className="grid grid-cols-2 gap-3">
+                    <Input
+                        name="firstname"
+                        label="Prénom"
+                        placeholder="Prénom"
+                        control={control}
+                        errors={errors.firstname}
+                        rules={{ required: true }}
+                    />
+                    <Input
+                        name="lastname"
+                        label="Nom"
+                        placeholder="Nom"
+                        control={control}
+                        errors={errors.lastname}
+                        rules={{ required: true }}
+                    />
+                </Container>
                 <Input
-                    name="lastname"
-                    label="Nom"
-                    placeholder="Nom"
+                    name="password"
+                    label="Mot de passe"
+                    placeholder="Mot de passe"
+                    type="password"
                     control={control}
-                    errors={errors.lastname}
-                    rules={{ required: true }}
+                    errors={errors.password}
+                    rules={{ required: true, minLength: 6 }}
                 />
-            </Container>            
-            <Input
-                name="password"
-                label="Mot de passe"
-                placeholder="Mot de passe"
-                type="password"
-                control={control}
-                errors={errors.password}
-                rules={{ required: true, minLength: 6 }}
-            />
-            <Input
-                name="plainPassword"
-                label="Confirmer le mot de passe"
-                placeholder="Mot de passe"
-                type="password"
-                control={control}
-                errors={errors.plainPassword}
-                rules={{ required: true, minLength: 6 }}
-            />
-            <Submit
-                value="Créer mon compte"
-            />
-        </form>
+                <Input
+                    name="plainPassword"
+                    label="Confirmer le mot de passe"
+                    placeholder="Mot de passe"
+                    type="password"
+                    control={control}
+                    errors={errors.plainPassword}
+                    rules={{ required: true, minLength: 6 }}
+                />
+                <Submit
+                    value="Créer mon compte"
+                />
+            </form>
+        </>
     )
 }
