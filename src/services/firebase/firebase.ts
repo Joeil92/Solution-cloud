@@ -9,7 +9,7 @@ import {
   createUserWithEmailAndPassword
 } from 'firebase/auth';
 import { getFirebaseConfig } from './firebaseConfig';
-import { collection, getDocs, getFirestore } from 'firebase/firestore';
+import { addDoc, collection, getDocs, getFirestore } from 'firebase/firestore';
 
 const app = initializeApp(getFirebaseConfig());
 const auth = getAuth(app);
@@ -38,6 +38,18 @@ export const userStateListener = (callback: NextOrObserver<User>) => {
 }
 
 export const SignOutUser = async () => await signOut(auth);
+
+export const addDatabase = async (dbName: string, data: any) => {
+  try {
+    const docRef = await addDoc(collection(db, dbName), data);
+    data.id = docRef.id
+
+    return data;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    return null;
+  }
+}
 
 export const getDatabase = async (dbName: string) => {
   try {

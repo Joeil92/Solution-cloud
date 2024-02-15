@@ -26,13 +26,13 @@ export default function Input({ control, name, label, type = 'text', placeholder
                 <Container className="my-3">
                     {label && <label
                         htmlFor={name}
-                        className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                        className="block uppercase tracking-wide text-gray-900 text-xs font-bold mb-2"
                     >{label}</label>}
                     <input
                         {...field}
                         type={type}
                         placeholder={placeholder}
-                        className="appearance-none block w-full text-gray-700 border rounded py-2 px-3 mb-3 leading-tight focus:outline-none"
+                        className="appearance-none block w-full text-gray-900 border rounded py-2 px-3 mb-3 leading-tight focus:outline-none"
                     />
                     {
                         errors?.type === 'required' && <Typography className="text-red-500 text-xs">Ce champ est obligatoire</Typography>
