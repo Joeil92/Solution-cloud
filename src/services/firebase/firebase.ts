@@ -9,9 +9,11 @@ import {
   createUserWithEmailAndPassword
 } from 'firebase/auth';
 import { getFirebaseConfig } from './firebaseConfig';
+import { collection, getDocs, getFirestore } from 'firebase/firestore';
 
 const app = initializeApp(getFirebaseConfig());
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 export const createUser = async (
   email: string,
@@ -36,3 +38,18 @@ export const userStateListener = (callback: NextOrObserver<User>) => {
 }
 
 export const SignOutUser = async () => await signOut(auth);
+
+export const getDatabase = async (dbName: string) => {
+  try {
+    const docs = await getDocs(collection(db, dbName));
+    const data = docs.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}

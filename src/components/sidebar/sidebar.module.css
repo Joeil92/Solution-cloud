@@ -1,0 +1,57 @@
+.sidenav {
+    height: 100%;
+    position: fixed;
+    border-right: solid 1px rgb(237, 236, 236);
+    top: 0;
+    left: 0;
+    width: 200px;
+    padding: 10px 14px;
+    font-weight: 500;
+    background-color: #D6F1E4;
+    white-space: nowrap;
+    transition: var(--tran-05);
+    color: black;
+}
+
+.sidenav ul {
+    margin-top: 50px;
+}
+
+.sidenav li {
+    height: 50px;
+    margin-top: 10px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.sidenav li a {
+    height: 100%;
+    width: 100%;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding-left: 10px;
+    border-radius: 6px;
+    transition: var(--tran-03);
+}
+
+.sidenav li a:hover {
+    background-color: var(--primary-500);
+}
+
+.sidenav li a:hover .icon,
+.sidenav li a:hover,
+.sidenav li p:hover {
+    color: white;
+    transition: var(--tran-02);
+}
+
+.active {
+    color: white;
+    background-color: var(--primary-500);
+    border-radius: 6px;
+}
+
