@@ -17,7 +17,7 @@ export default function Shop() {
 
     useEffect(() => {
         const getArticles = async () =>{
-            const data = await getDatabaseByFilters('articles', orderBy('created_at'));
+            const data = await getDatabaseByFilters('articles', orderBy('created_at', 'desc'));
             console.log(data);
             
             setArticles(data);
@@ -26,7 +26,17 @@ export default function Shop() {
         getArticles();
     }, [searchParams]);
 
-    const articlesFiltered = articles.filter(e => e.name.includes(searchbarInput));
+    const articlesFiltered = articles.filter(e => {
+        if(!e.name.toLocaleLowerCase().includes(searchbarInput.toLocaleLowerCase())) {
+            return false
+        };
+
+        if(searchParams.get('c') && e.category.id !== searchParams.get('c')) {
+            return false
+        };
+
+        return true;
+    });
 
     return (
         <>

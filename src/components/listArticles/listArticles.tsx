@@ -14,15 +14,21 @@ export default function ListArticles({ articles }: Props) {
             {articles.length === 0
             ? <Typography>Aucun article disponible</Typography>
             : articles.map((article) => (
-                <Card key={article.id} className="w-full p-3 my-3">
-                    <FlexContainer items="center" justify="between">
-                        <Typography tag="h3">{article.name}</Typography>
-                        <Container>
-                            <Typography>ajouté le {article.created_at.toDate().toLocaleDateString('fr')}</Typography>
-                            {/* <Typography></Typography> */}
+                <Card key={article.id} className="w-full my-3">
+                    <Container className="grid grid-cols-6">
+                        <img src={article.imageUrl} className="px-3" alt="" />
+                        <Container className="col-span-5">
+                            <FlexContainer items="center" justify="between">
+                                <Typography tag="h3">
+                                    {article.name} <Typography tag="span">stock : {article.quantity}</Typography>
+                                </Typography>
+                                <Container>
+                                    <Typography>ajouté le {article.created_at.toDate().toLocaleDateString('fr')}</Typography>
+                                </Container>
+                            </FlexContainer>
+                            <Typography>{article.description}</Typography>
                         </Container>
-                    </FlexContainer>
-                    <Typography>{article.description}</Typography>
+                    </Container>
                 </Card>
             ))}
         </Container>

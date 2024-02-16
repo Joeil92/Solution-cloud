@@ -18,10 +18,12 @@ import {
   getFirestore,
   query
 } from 'firebase/firestore';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
 const app = initializeApp(getFirebaseConfig());
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 export const createUser = async (
   email: string,
@@ -46,6 +48,16 @@ export const userStateListener = (callback: NextOrObserver<User>) => {
 }
 
 export const SignOutUser = async () => await signOut(auth);
+
+export const uploadFile = async (file: File): Promise<string> => {
+  const storageRef = ref(storage, `articles/${file.name}`)
+
+  await uploadBytes(storageRef, file)
+
+  const url = await getDownloadURL(storageRef);
+
+  return url;
+}
 
 export const addDatabase = async (dbName: string, data: any) => {
   try {

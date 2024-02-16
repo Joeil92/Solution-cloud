@@ -15,7 +15,7 @@ export default function Typography({ children, tag = 'p', className = "", style 
         <>
             {
                 tag === 'p' && <p className={`text-base ${className} ${onClick ? "hover:text-primary-600 cursor-pointer" : ""}`} style={style} onClick={onClick}>{children}</p> ||
-                tag === 'span' && <span className={`text-sm text-gray-500 ${className} ${onClick ? "hover:text-primary-600 cursor-pointer" : ""}`} style={style} onClick={onClick}>{children}</span> ||
+                tag === 'span' && <span className={`text-sm text-gray-300 ${className} ${onClick ? "hover:text-primary-600 cursor-pointer" : ""}`} style={style} onClick={onClick}>{children}</span> ||
                 tag === 'h3' && <h3 className={`text-2xl ${className} ${onClick ? "hover:text-primary-600 cursor-pointer" : ""}`} style={style} onClick={onClick}>{children}</h3> ||
                 tag === 'h2' && <h2 className={`text-3xl ${className} ${onClick ? "hover:text-primary-600 cursor-pointer" : ""}`} style={style} onClick={onClick}>{children}</h2> ||
                 tag === 'h1' && <h1 className={`text-4xl ${className} ${onClick ? "hover:text-primary-600 cursor-pointer" : ""}`} style={style} onClick={onClick}>{children}</h1>

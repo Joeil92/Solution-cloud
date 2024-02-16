@@ -5,6 +5,7 @@ export interface Article {
     name: string
     description : string | null
     category: DocumentReference
+    imageUrl: string
     quantity: string
     created_at : Timestamp
 }

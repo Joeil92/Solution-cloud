@@ -1,9 +1,11 @@
 import Entity from "@SC/components/form/entity";
+import File from "@SC/components/form/file";
 import Input from "@SC/components/form/input";
 import Submit from "@SC/components/form/submit";
 import Textarea from "@SC/components/form/textarea";
-import { addDatabase } from "@SC/services/firebase/firebase";
+import { addDatabase, uploadFile } from "@SC/services/firebase/firebase";
 import Container from "@SC/ui/container/container";
+import { useState } from "react";
 import { useForm } from "react-hook-form"
 
 interface Inputs {
@@ -11,25 +13,37 @@ interface Inputs {
     description: string
     category: string | null
     quantity: number
+    imageUrl: string
     created_at: Date
 }
 
 export default function ArticleForm() {
+    const [image, setImage] = useState<File>();
     const { handleSubmit, control, reset, formState: { errors } } = useForm<Inputs>({
         defaultValues: {
-            name: "",
+            name: "Test",
             description: "",
-            category: null,
+            category: '',
             quantity: 0,
             created_at: new Date()
         }
     });
 
     const onSubmit = async (data: Inputs) => {
+        let url;
+
+        if(image) {
+            url = await uploadFile(image);
+            data.imageUrl = url;
+        }
+        
         const res = await addDatabase("articles", data);
-        console.log(res);
 
         if(res) reset();
+    }
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) setImage(e.target.files[0]);
     }
 
     return (
@@ -61,6 +75,14 @@ export default function ArticleForm() {
                     errors={errors.quantity}
                 />
             </Container>
+            <File
+                name=""
+                placeholder="Télécharger une image"
+                label="Image"
+                onChange={handleFileChange}
+                control={control}
+                errors={undefined}
+            />
             <Textarea
                 name="description"
                 placeholder="Description"
