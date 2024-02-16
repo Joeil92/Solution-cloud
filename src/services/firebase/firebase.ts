@@ -9,7 +9,15 @@ import {
   createUserWithEmailAndPassword
 } from 'firebase/auth';
 import { getFirebaseConfig } from './firebaseConfig';
-import { addDoc, collection, doc, getDocs, getFirestore } from 'firebase/firestore';
+import {
+  QueryConstraint,
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  getFirestore,
+  query
+} from 'firebase/firestore';
 
 const app = initializeApp(getFirebaseConfig());
 const auth = getAuth(app);
@@ -54,8 +62,27 @@ export const addDatabase = async (dbName: string, data: any) => {
 export const getDoc = (dbName: string, uid: string) => doc(db, dbName, uid);
 
 export const getDatabase = async (dbName: string) => {
+  const q = query(collection(db, dbName));
+
   try {
-    const docs = await getDocs(collection(db, dbName));
+    const docs = await getDocs(q);
+    const data = docs.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+}
+
+export const getDatabaseByFilters = async (dbName: string, queryConstraints: QueryConstraint): Promise<any[]> => {
+  const q = query(collection(db, dbName), queryConstraints);
+
+  try {
+    const docs = await getDocs(q);
     const data = docs.docs.map((doc) => ({
       id: doc.id,
       ...doc.data()

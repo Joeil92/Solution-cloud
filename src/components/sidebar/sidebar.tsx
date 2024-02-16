@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import styles from "./sidebar.module.css";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Button from "@SC/ui/button/button";
+import Loader from "../loader/loader";
 
 export default function Sidebar() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -11,12 +12,12 @@ export default function Sidebar() {
 
     const onClick = (uid: string) => {
         setSearchParams(params => {
-            if(params.get('c') === uid) {
+            if (params.get('c') === uid) {
                 params.delete('c');
             } else {
                 params.set('c', uid);
             }
-            
+
             return params;
         })
     }
@@ -35,14 +36,17 @@ export default function Sidebar() {
             <div className={styles.menuBar}>
                 <div className={styles.menu}>
                     <ul className={styles.menuLinks}>
-                        {categories.map((category) => (
-                            <li key={category.id} onClick={() => onClick(category.id)} className={`${searchParams.toString().includes(category.id) ? styles.active : ""}`}>
-                                <a href={category.pathname}>
-                                    {category.icon}
-                                    <span className={styles.text}>{category.name}</span>
-                                </a>
-                            </li>
-                        ))}
+                        {categories.length === 0
+                            ? <Loader />
+                            : categories.map((category) => (
+                                <li key={category.id} onClick={() => onClick(category.id)} className={`${searchParams.toString().includes(category.id) ? styles.active : ""}`}>
+                                    <a href={category.pathname}>
+                                        {category.icon}
+                                        <span className={styles.text}>{category.name}</span>
+                                    </a>
+                                </li>
+                            ))
+                        }
                     </ul>
                     <ul>
                         <Button onClick={() => navigate('/newArticle')}>Ajouter un article</Button>

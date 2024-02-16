@@ -11,6 +11,7 @@ interface Inputs {
     description: string
     category: string | null
     quantity: number
+    created_at: Date
 }
 
 export default function ArticleForm() {
@@ -19,7 +20,8 @@ export default function ArticleForm() {
             name: "",
             description: "",
             category: null,
-            quantity: 0
+            quantity: 0,
+            created_at: new Date()
         }
     });
 

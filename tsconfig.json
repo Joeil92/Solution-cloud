@@ -28,7 +28,7 @@
       "@SC/services/*": ["./src/services/*"],
       "@SC/form/*": ["./src/form/*"],
       "@SC/utils/*": ["./src/shared/utils/*"],
-      "@SC/types/*": ["./src/shared/types/*"],
+      "@SC/types/*": ["./src/types/*"],
       "@SC/locales/*": ["./locales/*"],
       "@SC/firebase/*": ["./services/firebase/*"],
     }
