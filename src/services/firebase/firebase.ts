@@ -9,7 +9,7 @@ import {
   createUserWithEmailAndPassword
 } from 'firebase/auth';
 import { getFirebaseConfig } from './firebaseConfig';
-import { addDoc, collection, getDocs, getFirestore } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, getFirestore } from 'firebase/firestore';
 
 const app = initializeApp(getFirebaseConfig());
 const auth = getAuth(app);
@@ -50,6 +50,8 @@ export const addDatabase = async (dbName: string, data: any) => {
     return null;
   }
 }
+
+export const getDoc = (dbName: string, uid: string) => doc(db, dbName, uid);
 
 export const getDatabase = async (dbName: string) => {
   try {

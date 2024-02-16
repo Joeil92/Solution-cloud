@@ -3,7 +3,7 @@ import Select from 'react-select'
 import Container from "@SC/ui/container/container";
 import Typography from "@SC/ui/typography/typography";
 import { useEffect, useState } from "react";
-import { getDatabase } from "@SC/services/firebase/firebase";
+import { getDatabase, getDoc } from "@SC/services/firebase/firebase";
 
 interface Props {
     name: string
@@ -46,7 +46,7 @@ export default function Entity({ name, label, placeholder, endpoint, optionValue
                     <Select
                         {...field}
                         placeholder={placeholder}
-                        onChange={(e) => field.onChange(`collection/${e.id}`)}
+                        onChange={(e) => field.onChange(getDoc(endpoint, e.id))}
                         getOptionLabel={(option) => option[optionValue]}
                         getOptionValue={(option) => option.id}
                         value={options.find(e => e.id === Number(defaultValue))}
