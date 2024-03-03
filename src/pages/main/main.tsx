@@ -6,6 +6,6 @@ export default function Main() {
     const { currentUser } = useContext(AuthContext);
 
     return (
-        <Typography>{currentUser?.uid}</Typography>
+        <Typography>Bienvenue !</Typography>
     )
 }

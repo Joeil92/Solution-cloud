@@ -1,14 +1,12 @@
 import { getDatabase } from "@SC/services/firebase/firebase";
 import { useEffect, useState } from "react";
 import styles from "./sidebar.module.css";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import Button from "@SC/ui/button/button";
+import { useSearchParams } from "react-router-dom";
 import Loader from "../loader/loader";
 
 export default function Sidebar() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [categories, setCategories] = useState<any[]>([]);
-    const navigate = useNavigate();
 
     const onClick = (uid: string) => {
         setSearchParams(params => {
@@ -47,9 +45,6 @@ export default function Sidebar() {
                                 </li>
                             ))
                         }
-                    </ul>
-                    <ul>
-                        <Button onClick={() => navigate('/newArticle')}>Ajouter un article</Button>
                     </ul>
                 </div>
             </div>

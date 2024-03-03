@@ -13,6 +13,7 @@ import {
   QueryConstraint,
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   getFirestore,
@@ -73,6 +74,17 @@ export const addDatabase = async (dbName: string, data: any) => {
     data.id = docRef.id
 
     return data;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    return null;
+  }
+}
+
+export const removeDatabase = async (dbName: string, id: string) => {
+  try {
+    await deleteDoc(doc(db, dbName, id));
+
+    return true;
   } catch (e) {
     console.error("Error adding document: ", e);
     return null;

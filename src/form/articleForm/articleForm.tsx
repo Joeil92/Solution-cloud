@@ -3,9 +3,10 @@ import File from "@SC/components/form/file";
 import Input from "@SC/components/form/input";
 import Submit from "@SC/components/form/submit";
 import Textarea from "@SC/components/form/textarea";
+import { AuthContext } from "@SC/contexts/authContext";
 import { addDatabase, uploadFile } from "@SC/services/firebase/firebase";
 import Container from "@SC/ui/container/container";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form"
 
 interface Inputs {
@@ -14,17 +15,20 @@ interface Inputs {
     category: string | null
     quantity: number
     imageUrl: string
+    user_uid: string
     created_at: Date
 }
 
 export default function ArticleForm() {
+    const { currentUser } = useContext(AuthContext);
     const [image, setImage] = useState<File>();
     const { handleSubmit, control, reset, formState: { errors } } = useForm<Inputs>({
         defaultValues: {
-            name: "Test",
+            name: "",
             description: "",
             category: '',
             quantity: 0,
+            user_uid: currentUser?.uid,
             created_at: new Date()
         }
     });
