@@ -7,6 +7,8 @@ import { useState } from "react";
 import AlertObject from "@SC/ui/alert/alert.interface";
 import Alert from "@SC/ui/alert/alert";
 import { createUser } from "@SC/services/firebase/firebase";
+import Radio from "@SC/components/form/radio";
+import Typography from "@SC/ui/typography/typography";
 
 interface Inputs {
     email: string
@@ -14,6 +16,7 @@ interface Inputs {
     plainPassword: string
     firstname: string
     lastname: string
+    role: string
 }
 
 export default function RegisterForm() {
@@ -25,32 +28,30 @@ export default function RegisterForm() {
             password: "test1234",
             plainPassword: "test1234",
             firstname: "John",
-            lastname: "Doe"
+            lastname: "Doe",
+            role: ""
         }
     });
 
     const onSubmit = async (data: Inputs) => {
         if (data.password !== data.plainPassword) return;
 
-        createUser(data.email, data.password)
-            .then((userCredential) => {
-                if(userCredential) {
-                    const user = userCredential.user;
-                    console.log(user);
-                    
-                    navigate('/');
-                }
-            })
-            .catch((error) => {
-                let msg;
-                if(error.code == 'auth/email-already-in-use') {
-                    msg = "Un compte avec cet email existe déjà"
-                } else {
-                    msg = "Une erreur est survenue merci de réessayer ultérieurement"
-                }
+        try {
+            const response = await createUser(data.email, data.password, data.role); 
 
-                setAlert({ type: 'danger', message: msg })
-            });
+            if(response) {
+                navigate('/');
+            }
+        } catch (error: any) {
+            let msg;
+            if (error.code == 'auth/email-already-in-use') {
+                msg = "Un compte avec cet email existe déjà"
+            } else {
+                msg = "Une erreur est survenue merci de réessayer ultérieurement"
+            }
+
+            setAlert({ type: 'danger', message: msg })
+        }
     }
 
     return (
@@ -59,7 +60,7 @@ export default function RegisterForm() {
                 <Alert
                     type={alert.type}
                     message={alert.message}
-                    handleState={setAlert} />}        
+                    handleState={setAlert} />}
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Input
                     name="email"
@@ -105,6 +106,23 @@ export default function RegisterForm() {
                     errors={errors.plainPassword}
                     rules={{ required: true, minLength: 6 }}
                 />
+                <Typography>Qui êtes-vous ?</Typography>
+                <Radio 
+                    name="role"
+                    label="Acheteur"
+                    value="buyer"
+                    control={control}
+                    errors={errors.plainPassword}
+                    rules={{ required: true }}
+                />
+                <Radio 
+                    name="role"
+                    label="Vendeur"
+                    value="seller"
+                    control={control}
+                    errors={errors.plainPassword}
+                    rules={{ required: true }}
+                />           
                 <Submit
                     value="Créer mon compte"
                 />

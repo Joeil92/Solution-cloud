@@ -1,7 +1,6 @@
 import { useEffect } from "react"
 import styles from "./alert.module.css";
 import Container from "../container/container";
-import Typography from "../typography/typography";
 import AlertInterface from "./alert.interface";
 
 interface Props {
@@ -14,9 +13,9 @@ export default function Alert({ type, message, handleState }: Props) {
 
     const handleType = () => {
         if(type === "danger") {
-            return "my-3 bg-red-200 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+            return "my-3 font-medium bg-red-200 border border-red-400 text-red-700 px-4 py-3 rounded relative"
         } else {
-            return "my-3 bg-blue-200 border border-blue-400 text-blue-700 px-4 py-3 rounded relative"
+            return "my-3 font-medium bg-blue-200 border border-blue-400 text-blue-700 px-4 py-3 rounded relative"
         }
     }
 
@@ -33,7 +32,7 @@ export default function Alert({ type, message, handleState }: Props) {
     return (
         <Container className={handleState ? styles.alert : ""}>
             <Container className={handleType()}>
-                <Typography>{message}</Typography>
+                <p>{message}</p>
             </Container>
         </Container>
     )

@@ -1,7 +1,8 @@
 import { User } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { createContext, useState, useEffect, ReactNode } from "react";
-import { SignOutUser, userStateListener } from "@SC/services/firebase/firebase";
+import { SignOutUser, getDatabaseByFilters, userStateListener } from "@SC/services/firebase/firebase";
+import { where } from "firebase/firestore";
 
 interface Props {
   children?: ReactNode
@@ -9,18 +10,23 @@ interface Props {
 
 export const AuthContext = createContext({
   currentUser: {} as User | null,
-  setCurrentUser: (_user:User) => {},
-  signOut: () => {}
+  role: null as string | null,
+  setCurrentUser: (_user: User) => { },
+  signOut: () => { }
 });
 
 export const AuthProvider = ({ children }: Props) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [role, setRole] = useState<string | null>(null);
   const navigate = useNavigate()
 
   useEffect(() => {
-    const unsubscribe = userStateListener((user) => {
+    const unsubscribe = userStateListener(async (user) => {
       if (user) {
-        setCurrentUser(user)
+        const role = await getDatabaseByFilters("role", where("uid", "==", user.uid));
+       
+        setRole(role[0].role);
+        setCurrentUser(user);
       }
     });
     return unsubscribe
@@ -33,7 +39,8 @@ export const AuthProvider = ({ children }: Props) => {
   }
 
   const value = {
-    currentUser, 
+    currentUser,
+    role,
     setCurrentUser,
     signOut
   }

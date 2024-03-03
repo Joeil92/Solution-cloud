@@ -6,6 +6,7 @@ import Register from "@SC/pages/register/register";
 import Main from "@SC/pages/main/main";
 import Shop from "@SC/pages/shop/shop";
 import NewArticle from "@SC/pages/newArticle/newArticle";
+import MyArticles from "@SC/pages/myArticles/myArticles";
 
 const router = createBrowserRouter([
     {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
             {
                 path: "newArticle",
                 element: <NewArticle />
+            },
+            {
+                path: "myArticles",
+                element: <MyArticles />
             },
             {
                 path: "login",

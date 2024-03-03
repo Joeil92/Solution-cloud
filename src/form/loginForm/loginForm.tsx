@@ -31,7 +31,6 @@ export default function LoginForm() {
             .then((userCredential) => {
                 if(userCredential) {
                     const user = userCredential.user;
-                    console.log(user);
                     navigate('/');
                 }
             })

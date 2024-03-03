@@ -2,8 +2,6 @@ import Container from "@SC/ui/container/container";
 import Typography from "@SC/ui/typography/typography";
 import { Control, Controller, FieldError } from "react-hook-form";
 
-type Type = 'text' | 'password' | 'number' | 'date' | "radio"
-
 interface Rules {
     required?: boolean
     minLength?: number
@@ -12,34 +10,35 @@ interface Rules {
 interface Props {
     control: Control<any>
     name: string
+    value: string
     label?: string
-    type?: Type
     placeholder?: string
     errors: FieldError | undefined
     rules?: Rules
 }
 
-export default function Input({ control, name, label, type = 'text', placeholder, errors, rules }: Props) {
+export default function Radio({ control, name, value, label, placeholder, errors, rules }: Props) {
     return (
         <Controller
             render={({ field }) => (
-                <Container className="my-3">
-                    {label && <label
-                        htmlFor={name}
-                        className="block uppercase tracking-wide text-gray-900 text-xs font-bold mb-2"
-                    >{label}</label>}
+                <Container className="flex items-center my-3">
                     <input
                         {...field}
-                        type={type}
+                        type="radio"
+                        value={value}
                         placeholder={placeholder}
-                        className="appearance-none block w-full text-gray-900 border rounded py-2 px-3 mb-3 leading-tight focus:outline-none"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500  focus:ring-2 "
                     />
+                    {label && <label
+                        htmlFor={name}
+                        className="ms-2 text-sm font-medium text-gray-900"
+                    >{label}</label>}
                     {
                         errors?.type === 'required' && <Typography className="text-red-500 text-xs">Ce champ est obligatoire</Typography>
                     }
                     {
                         errors?.type === 'minLength' && <Typography className="text-red-500 text-xs">Ce champ est a une taille minimale à respecter</Typography>
-                    }                    
+                    }
                 </Container>
             )}
             name={name}

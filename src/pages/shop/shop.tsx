@@ -18,7 +18,6 @@ export default function Shop() {
     useEffect(() => {
         const getArticles = async () =>{
             const data = await getDatabaseByFilters('articles', orderBy('created_at', 'desc'));
-            console.log(data);
             
             setArticles(data);
         }

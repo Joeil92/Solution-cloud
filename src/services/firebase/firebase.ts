@@ -27,11 +27,19 @@ const storage = getStorage(app);
 
 export const createUser = async (
   email: string,
-  password: string
+  password: string,
+  role: string
 ) => {
-  if (!email && !password) return;
+  if (!email || !password || !role) return;
 
-  return await createUserWithEmailAndPassword(auth, email, password);
+  return await createUserWithEmailAndPassword(auth, email, password)
+    .then(async userCredential => {
+      const user = userCredential.user;
+
+      await addDatabase('role', { uid: user.uid, role: role });
+
+      return userCredential;
+    });
 }
 
 export const signInUser = async (
