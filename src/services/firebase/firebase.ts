@@ -17,7 +17,8 @@ import {
   doc,
   getDocs,
   getFirestore,
-  query
+  query,
+  updateDoc
 } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 
@@ -72,6 +73,19 @@ export const addDatabase = async (dbName: string, data: any) => {
   try {
     const docRef = await addDoc(collection(db, dbName), data);
     data.id = docRef.id
+
+    return data;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    return null;
+  }
+}
+
+export const updateDatabase = async (dbName: string, data: any) => {
+  const docRef = doc(db, dbName, data.id);
+
+  try {
+    await updateDoc(docRef, data);
 
     return data;
   } catch (e) {

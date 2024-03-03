@@ -4,24 +4,31 @@ import Input from "@SC/components/form/input";
 import Submit from "@SC/components/form/submit";
 import Textarea from "@SC/components/form/textarea";
 import { AuthContext } from "@SC/contexts/authContext";
-import { addDatabase, uploadFile } from "@SC/services/firebase/firebase";
+import { addDatabase, updateDatabase, uploadFile } from "@SC/services/firebase/firebase";
 import Container from "@SC/ui/container/container";
 import { useContext, useState } from "react";
 import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router-dom";
 
-interface Inputs {
+export interface Inputs {
+    id?: string
     name: string
     description: string
     category: string | null
     quantity: number
     imageUrl: string
     user_uid: string
-    created_at: Date
+    created_at?: Date
 }
 
-export default function ArticleForm() {
+interface Props {
+    values?: Inputs
+}
+
+export default function ArticleForm({ values }: Props) {
     const { currentUser } = useContext(AuthContext);
     const [image, setImage] = useState<File>();
+    const navigate = useNavigate();
     const { handleSubmit, control, reset, formState: { errors } } = useForm<Inputs>({
         defaultValues: {
             name: "",
@@ -30,7 +37,8 @@ export default function ArticleForm() {
             quantity: 0,
             user_uid: currentUser?.uid,
             created_at: new Date()
-        }
+        },
+        values
     });
 
     const onSubmit = async (data: Inputs) => {
@@ -41,9 +49,14 @@ export default function ArticleForm() {
             data.imageUrl = url;
         }
         
-        const res = await addDatabase("articles", data);
+        if(!values) {
+            const res = await addDatabase("articles", data);
+        } else {
+            const res = await updateDatabase("articles", data);
+        }
 
-        if(res) reset();
+        reset();
+        navigate('/shop');
     }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,7 +107,7 @@ export default function ArticleForm() {
                 control={control}
                 errors={errors.description}
             />
-            <Submit value="Créer l'aticle" />
+            <Submit value={!values ? "Créer l'article" : "Modifier l'article" } />
         </form>
     )
 }
